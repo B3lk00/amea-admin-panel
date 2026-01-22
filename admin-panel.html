@@ -1,1 +1,132 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin panel | AMEA Tech</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<div class="admin-wrap">
+  <h1>Admin panel – Oglasi</h1>
+
+  <div class="admin-card">
+    <div class="grid">
+      <div class="grid-1">
+
+        <div>
+          <label>Kategorija</label>
+          <select id="kategorija">
+            <option value="racunari">Računari</option>
+            <option value="laptopi">Laptopi</option>
+            <option value="monitori">Monitori</option>
+            <option value="toneri">Toneri</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Naziv</label>
+          <input id="naziv">
+        </div>
+
+        <div>
+          <label>Cijena</label>
+          <input id="cijena">
+        </div>
+
+        <div>
+          <label>Opis</label>
+          <textarea id="opis"></textarea>
+        </div>
+
+        <div>
+          <label>Specifikacije (svaka u novi red)</label>
+          <textarea id="spec"></textarea>
+        </div>
+
+        <div>
+          <label>Telefon</label>
+          <input id="telefon">
+        </div>
+
+        <div>
+          <label>Email</label>
+          <input id="email">
+        </div>
+
+        <div class="row">
+          <button onclick="create()">Objavi oglas</button>
+          <span id="status"></span>
+        </div>
+
+      </div>
+
+      <div>
+        <h3>Postojeći oglasi</h3>
+        <div id="list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://amea-oglasi-api.belmins1617.workers.dev";
+const ADMIN_KEY = "ISTI_KLJUČ_KAO_U_WORKERU";
+
+const $ = id => document.getElementById(id);
+
+async function load(){
+  const res = await fetch(API_BASE + "/api/oglasi", { cache:"no-store" });
+  const data = await res.json();
+  $("list").innerHTML = (data.items || []).map(o => `
+    <div class="item">
+      <b>${o.naziv}</b>
+      <button onclick="del('${o.id}')">Obriši</button>
+    </div>
+  `).join("");
+}
+
+async function create(){
+  $("status").textContent = "Objavljujem...";
+
+  const payload = {
+    kategorija: $("kategorija").value,
+    naziv: $("naziv").value,
+    cijena: $("cijena").value,
+    opis: $("opis").value,
+    spec: $("spec").value.split("\n"),
+    kontakt: {
+      telefon: $("telefon").value,
+      email: $("email").value
+    },
+    slike: []
+  };
+
+  const res = await fetch(API_BASE + "/api/oglasi", {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "X-Admin-Key": ADMIN_KEY
+    },
+    body: JSON.stringify(payload)
+  });
+
+  $("status").textContent = res.ok ? "Objavljeno ✅" : "Greška ❌";
+  load();
+}
+
+async function del(id){
+  await fetch(API_BASE + "/api/oglasi?id=" + id, {
+    method:"DELETE",
+    headers:{ "X-Admin-Key": ADMIN_KEY }
+  });
+  load();
+}
+
+load();
+</script>
+
+</body>
+</html>
