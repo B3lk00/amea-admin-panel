@@ -16,6 +16,16 @@
       <div class="grid-1">
 
         <div>
+          <label>ADMIN KEY (samo ti)</label>
+          <input id="key" placeholder="Unesi ADMIN_KEY" />
+          <div class="row" style="justify-content:flex-start;gap:8px;margin-top:8px">
+            <button type="button" onclick="saveKey()">Sačuvaj</button>
+            <button type="button" class="btn-ghost" onclick="clearKey()">Obriši</button>
+            <span id="keyStatus" class="muted"></span>
+          </div>
+        </div>
+
+        <div>
           <label>Kategorija</label>
           <select id="kategorija">
             <option value="racunari">Računari</option>
@@ -27,37 +37,38 @@
 
         <div>
           <label>Naziv</label>
-          <input id="naziv">
+          <input id="naziv" placeholder="npr. Gaming PC Ryzen 5..." />
         </div>
 
         <div>
           <label>Cijena</label>
-          <input id="cijena">
+          <input id="cijena" placeholder="npr. 1499 KM" />
         </div>
 
         <div>
           <label>Opis</label>
-          <textarea id="opis"></textarea>
+          <textarea id="opis" placeholder="Kratak opis..."></textarea>
         </div>
 
         <div>
           <label>Specifikacije (svaka u novi red)</label>
-          <textarea id="spec"></textarea>
+          <textarea id="spec" placeholder="Ryzen 5 5600&#10;16GB RAM&#10;1TB SSD"></textarea>
         </div>
 
         <div>
           <label>Telefon</label>
-          <input id="telefon">
+          <input id="telefon" placeholder="+387..." />
         </div>
 
         <div>
           <label>Email</label>
-          <input id="email">
+          <input id="email" placeholder="info@..." />
         </div>
 
         <div class="row">
-          <button onclick="create()">Objavi oglas</button>
-          <span id="status"></span>
+          <button type="button" onclick="create()">Objavi oglas</button>
+          <button type="button" class="btn-ghost" onclick="load()">Osvježi</button>
+          <span id="status" class="muted"></span>
         </div>
 
       </div>
@@ -66,65 +77,128 @@
         <h3>Postojeći oglasi</h3>
         <div id="list"></div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
 const API_BASE = "https://amea-oglasi-api.belmins1617.workers.dev";
-const ADMIN_KEY = "ISTI_KLJUČ_KAO_U_WORKERU";
+const KEY_STORAGE = "amea_admin_key";
 
 const $ = id => document.getElementById(id);
 
+function getKey(){
+  return localStorage.getItem(KEY_STORAGE) || "";
+}
+
+function setKeyStatus(){
+  const k = getKey();
+  $("key").value = k;
+  $("keyStatus").textContent = k ? "✅ Sačuvan" : "⚠️ Nije unesen";
+}
+
+function saveKey(){
+  const k = $("key").value.trim();
+  if(!k) { alert("Unesi ADMIN_KEY"); return; }
+  localStorage.setItem(KEY_STORAGE, k);
+  setKeyStatus();
+}
+
+function clearKey(){
+  localStorage.removeItem(KEY_STORAGE);
+  setKeyStatus();
+}
+
 async function load(){
+  $("status").textContent = "Učitavam...";
   const res = await fetch(API_BASE + "/api/oglasi", { cache:"no-store" });
   const data = await res.json();
-  $("list").innerHTML = (data.items || []).map(o => `
+  const items = data.items || [];
+
+  if(!items.length){
+    $("list").innerHTML = `<div class="muted">Nema oglasa.</div>`;
+    $("status").textContent = "";
+    return;
+  }
+
+  $("list").innerHTML = items.map(o => `
     <div class="item">
-      <b>${o.naziv}</b>
-      <button onclick="del('${o.id}')">Obriši</button>
+      <div>
+        <div><b>${o.naziv || ""}</b> <span class="muted">(${o.kategorija || ""})</span></div>
+        <div class="muted">${o.cijena || ""}</div>
+        <div class="muted" style="font-size:12px">id: ${o.id}</div>
+      </div>
+      <button class="btn-danger" onclick="del('${o.id}')">Obriši</button>
     </div>
   `).join("");
+
+  $("status").textContent = "";
 }
 
 async function create(){
-  $("status").textContent = "Objavljujem...";
+  const key = getKey();
+  if(!key){ alert("Prvo sačuvaj ADMIN_KEY."); return; }
 
   const payload = {
     kategorija: $("kategorija").value,
-    naziv: $("naziv").value,
-    cijena: $("cijena").value,
-    opis: $("opis").value,
-    spec: $("spec").value.split("\n"),
+    naziv: $("naziv").value.trim(),
+    cijena: $("cijena").value.trim(),
+    opis: $("opis").value.trim(),
+    spec: $("spec").value.split("\n").map(s=>s.trim()).filter(Boolean),
     kontakt: {
-      telefon: $("telefon").value,
-      email: $("email").value
+      telefon: $("telefon").value.trim(),
+      email: $("email").value.trim()
     },
     slike: []
   };
 
+  if(!payload.naziv){ $("status").textContent = "Naziv je obavezan."; return; }
+
+  $("status").textContent = "Objavljujem...";
   const res = await fetch(API_BASE + "/api/oglasi", {
     method:"POST",
     headers:{
       "Content-Type":"application/json",
-      "X-Admin-Key": ADMIN_KEY
+      "X-Admin-Key": key
     },
     body: JSON.stringify(payload)
   });
 
-  $("status").textContent = res.ok ? "Objavljeno ✅" : "Greška ❌";
-  load();
+  if(!res.ok){
+    const t = await res.text();
+    $("status").textContent = "Greška: " + t;
+    return;
+  }
+
+  $("naziv").value = "";
+  $("cijena").value = "";
+  $("opis").value = "";
+  $("spec").value = "";
+  $("status").textContent = "Objavljeno ✅";
+  await load();
 }
 
 async function del(id){
-  await fetch(API_BASE + "/api/oglasi?id=" + id, {
+  const key = getKey();
+  if(!key){ alert("Nema ADMIN_KEY."); return; }
+
+  $("status").textContent = "Brišem...";
+  const res = await fetch(API_BASE + "/api/oglasi?id=" + encodeURIComponent(id), {
     method:"DELETE",
-    headers:{ "X-Admin-Key": ADMIN_KEY }
+    headers:{ "X-Admin-Key": key }
   });
-  load();
+
+  if(!res.ok){
+    const t = await res.text();
+    $("status").textContent = "Greška: " + t;
+    return;
+  }
+
+  $("status").textContent = "Obrisano ✅";
+  await load();
 }
 
+setKeyStatus();
 load();
 </script>
 
