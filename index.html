@@ -224,6 +224,12 @@
         </div>
 
         <div style="margin-top:12px">
+  <label>Količina na stanju</label>
+  <input id="kolicina" type="number" min="0" step="1" placeholder="npr. 5">
+</div>
+
+
+        <div style="margin-top:12px">
           <label>Email</label>
           <input id="email" placeholder="info@...">
         </div>
@@ -343,6 +349,7 @@
       stanje: $("stanje").value,
       naziv: $("naziv").value.trim(),
       cijena: $("cijena").value.trim(),
+      kolicina: Number($("kolicina").value || 0),
       opis: $("opis").value.trim(),
       spec: readSpec(),
       kontakt: {
@@ -359,6 +366,7 @@
     $("stanje").value = "";
     $("naziv").value = "";
     $("cijena").value = "";
+    $("kolicina").value = "";
     $("opis").value = "";
     $("spec").value = "";
     $("telefon").value = "";
@@ -372,6 +380,7 @@
 
     $("btnCreate").style.display = on ? "none" : "";
     $("btnUpdate").style.display = on ? "" : "none";
+    $("kolicina").value = o.kolicina ?? 0;
     $("btnCancelEdit").style.display = on ? "" : "none";
     $("formTitle").textContent = on ? `Uredi oglas (${id})` : "Novi oglas";
   }
