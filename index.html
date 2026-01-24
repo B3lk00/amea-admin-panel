@@ -33,9 +33,7 @@
       display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
       margin-bottom:14px
     }
-    .title{
-      display:flex;flex-direction:column;gap:4px
-    }
+    .title{display:flex;flex-direction:column;gap:4px}
     h1{margin:0;font-size:22px}
     .sub{color:var(--muted);font-size:13px}
     .pill{
@@ -104,22 +102,11 @@
     }
     button:disabled{opacity:.55;cursor:not-allowed}
     .muted{color:var(--muted);font-size:12px}
-    .status{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-      min-height:16px;
-    }
+    .status{margin-top:10px;font-size:12px;color:var(--muted);min-height:16px}
 
-    /* list */
-    .toolbar{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px
-    }
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
     .search{flex:1;min-width:220px}
-    .list{
-      display:grid;gap:10px;
-      padding:14px;
-    }
+    .list{display:grid;gap:10px;padding:14px;}
     .item{
       border:1px solid var(--line);
       background: rgba(255,255,255,.03);
@@ -130,9 +117,7 @@
       gap:12px;
       align-items:center;
     }
-    @media(max-width:720px){
-      .item{grid-template-columns:1fr; }
-    }
+    @media(max-width:720px){ .item{grid-template-columns:1fr;} }
     .thumb{
       width:110px;height:78px;border-radius:12px;
       border:1px solid var(--line);
@@ -144,20 +129,9 @@
     .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .actions button{padding:8px 10px;border-radius:10px}
     .actions .secondary{color:#fff}
-    .hint{
-      border-top:1px solid var(--line);
-      padding:12px 14px;
-      background: rgba(0,0,0,.15);
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    /* gallery preview */
+    .hint{border-top:1px solid var(--line);padding:12px 14px;background: rgba(0,0,0,.15);color:var(--muted);font-size:12px}
     .previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .pv{
-      width:72px;height:56px;border-radius:12px;border:1px solid var(--line);
-      object-fit:cover;background: rgba(0,0,0,.25);
-    }
+    .pv{width:72px;height:56px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background: rgba(0,0,0,.25);}
   </style>
 </head>
 <body>
@@ -173,10 +147,10 @@
   </div>
 
   <div class="grid">
-    <!-- LEFT: form -->
     <div class="card">
       <h2 id="formTitle">Novi oglas</h2>
       <div class="body">
+
         <div>
           <label>ADMIN KEY</label>
           <div class="row">
@@ -224,10 +198,9 @@
         </div>
 
         <div style="margin-top:12px">
-  <label>Količina na stanju</label>
-  <input id="kolicina" type="number" min="0" step="1" placeholder="npr. 5">
-</div>
-
+          <label>Količina na stanju</label>
+          <input id="kolicina" type="number" min="0" step="1" placeholder="npr. 5">
+        </div>
 
         <div style="margin-top:12px">
           <label>Email</label>
@@ -265,7 +238,6 @@
       </div>
     </div>
 
-    <!-- RIGHT: list -->
     <div class="card">
       <h2>Postojeći oglasi</h2>
 
@@ -287,11 +259,7 @@
   const KEY_STORAGE = "amea_admin_key_v2";
 
   const $ = (id) => document.getElementById(id);
-  const state = {
-    items: [],
-    editingId: null,
-    editingOriginal: null
-  };
+  const state = { items: [], editingId: null, editingOriginal: null };
 
   function setStatus(msg){ $("status").textContent = msg || ""; }
   function getKey(){ return (localStorage.getItem(KEY_STORAGE) || "").trim(); }
@@ -301,14 +269,12 @@
     $("keyBadge").textContent = k ? `🔑 Key: sačuvan (${k.length} znakova)` : "🔑 Key: nije unesen";
     $("key").value = k;
   }
-
   function saveKey(){
     const k = $("key").value.trim();
     if(!k) return alert("Unesi ADMIN_KEY");
     localStorage.setItem(KEY_STORAGE, k);
     updateKeyBadge();
   }
-
   function clearKey(){
     localStorage.removeItem(KEY_STORAGE);
     updateKeyBadge();
@@ -320,7 +286,6 @@
     }[m]));
   }
 
-  // === upload jedna slika na Worker (/api/upload)
   async function uploadOne(file){
     const key = getKey();
     if(!key) throw new Error("Nema ADMIN_KEY");
@@ -344,7 +309,7 @@
   }
 
   function formToPayload(extraSlike){
-    const payload = {
+    return {
       kategorija: $("kategorija").value,
       stanje: $("stanje").value,
       naziv: $("naziv").value.trim(),
@@ -358,7 +323,6 @@
       },
       slike: Array.isArray(extraSlike) ? extraSlike : []
     };
-    return payload;
   }
 
   function clearForm(){
@@ -377,10 +341,8 @@
 
   function setEditMode(on, id=null){
     state.editingId = on ? id : null;
-
     $("btnCreate").style.display = on ? "none" : "";
     $("btnUpdate").style.display = on ? "" : "none";
-    $("kolicina").value = o.kolicina ?? 0;
     $("btnCancelEdit").style.display = on ? "" : "none";
     $("formTitle").textContent = on ? `Uredi oglas (${id})` : "Novi oglas";
   }
@@ -413,28 +375,33 @@
 
     list.innerHTML = items.map(o => {
       const thumb = (Array.isArray(o.slike) && o.slike.length) ? o.slike[0] : "";
+      const qty = (o.kolicina === 0 || o.kolicina) ? Number(o.kolicina) : null;
+
       return `
         <div class="item">
-          ${thumb ? `<img class="thumb" src="${esc(thumb)}" alt="">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">nema slike</div>`}
+          ${thumb ? `<img class="thumb" src="${esc(thumb)}" alt="">` :
+            `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">nema slike</div>`}
+
           <div>
             <div class="it-title">${esc(o.naziv||"")}</div>
             <div class="it-meta">
               <span class="tag">${esc(o.kategorija||"")}</span>
               ${o.stanje ? `<span class="tag">${esc(o.stanje)}</span>` : ""}
               ${o.cijena ? `<span class="tag">${esc(o.cijena)}</span>` : ""}
+              ${qty !== null ? `<span class="tag">Na stanju: ${esc(qty)}</span>` : ""}
             </div>
             <div class="muted" style="margin-top:6px;font-size:12px">id: ${esc(o.id)}</div>
           </div>
+
           <div class="actions">
-            <button class="secondary" type="button" onclick="startEdit('${esc(o.id)}')">Edit</button>
-            <button class="danger" type="button" onclick="delOglas('${esc(o.id)}')">Delete</button>
+            <button class="secondary" type="button" onclick="startEdit('${o.id}')">Edit</button>
+            <button class="danger" type="button" onclick="delOglas('${o.id}')">Delete</button>
           </div>
         </div>
       `;
     }).join("");
   }
 
-  // preview local images
   $("slike").addEventListener("change", () => {
     const files = Array.from($("slike").files || []);
     $("previews").innerHTML = files.map(f => {
@@ -447,7 +414,6 @@
     const key = getKey();
     if(!key) return alert("Prvo sačuvaj ADMIN_KEY.");
 
-    // upload slike
     const files = Array.from($("slike").files || []);
     let uploaded = [];
 
@@ -480,7 +446,6 @@
     }
   }
 
-  // === EDIT
   window.startEdit = (id) => {
     const o = state.items.find(x => x.id === id);
     if(!o) return;
@@ -492,6 +457,7 @@
     $("stanje").value = o.stanje || "";
     $("naziv").value = o.naziv || "";
     $("cijena").value = o.cijena || "";
+    $("kolicina").value = (o.kolicina ?? 0);
     $("opis").value = o.opis || "";
     $("spec").value = Array.isArray(o.spec) ? o.spec.join("\n") : "";
     $("telefon").value = o.kontakt?.telefon || "";
@@ -510,7 +476,6 @@
 
     const id = state.editingId;
 
-    // postojeće slike ostaju + dodaj nove upload
     const old = state.items.find(x => x.id === id);
     const oldImgs = Array.isArray(old?.slike) ? old.slike : [];
 
@@ -550,7 +515,6 @@
   window.delOglas = async (id) => {
     const key = getKey();
     if(!key) return alert("Nema ADMIN_KEY.");
-
     if(!confirm("Obrisati oglas?")) return;
 
     setStatus("Brišem...");
@@ -571,7 +535,6 @@
     setStatus("");
   }
 
-  // events
   $("btnSaveKey").addEventListener("click", saveKey);
   $("btnClearKey").addEventListener("click", clearKey);
   $("btnCreate").addEventListener("click", create);
