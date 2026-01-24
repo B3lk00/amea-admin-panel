@@ -3,204 +3,577 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin panel | AMEA Tech</title>
-  <link rel="stylesheet" href="style.css">
+  <title>AMEA Admin – Oglasi</title>
+  <style>
+    :root{
+      --bg:#0b0f1a;
+      --card:#0f1628;
+      --card2:#111c33;
+      --txt:#eaeaea;
+      --muted:#a8b3cf;
+      --line:rgba(255,255,255,.10);
+      --brand:#1e90ff;
+      --warn:#ffb347;
+      --danger:#ff4d4d;
+      --ok:#38d39f;
+      --shadow: 0 18px 55px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at 20% -10%, rgba(30,144,255,.20), transparent 55%),
+                  radial-gradient(circle at 85% 0%, rgba(255,179,71,.18), transparent 45%),
+                  var(--bg);
+      color:var(--txt);
+    }
+    .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+      margin-bottom:14px
+    }
+    .title{
+      display:flex;flex-direction:column;gap:4px
+    }
+    h1{margin:0;font-size:22px}
+    .sub{color:var(--muted);font-size:13px}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      border:1px solid var(--line);background:rgba(255,255,255,.04);
+      padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+    }
+    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card h2{
+      margin:0;
+      font-size:15px;
+      padding:14px 14px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:#dbe3ff;
+    }
+    .card .body{padding:14px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input,select,textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.25);
+      color:var(--txt);
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color: rgba(30,144,255,.6)}
+    .row{display:flex;gap:10px;align-items:center}
+    .row > *{flex:1}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    button{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:700;
+      color:#0b0f1a;
+      background: var(--brand);
+    }
+    button.secondary{
+      background: rgba(255,255,255,.08);
+      color:var(--txt);
+      border:1px solid var(--line);
+    }
+    button.danger{
+      background: var(--danger);
+      color:#fff;
+    }
+    button.warn{
+      background: var(--warn);
+      color:#111;
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .muted{color:var(--muted);font-size:12px}
+    .status{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      min-height:16px;
+    }
+
+    /* list */
+    .toolbar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px
+    }
+    .search{flex:1;min-width:220px}
+    .list{
+      display:grid;gap:10px;
+      padding:14px;
+    }
+    .item{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius:14px;
+      padding:12px;
+      display:grid;
+      grid-template-columns: 110px 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+    @media(max-width:720px){
+      .item{grid-template-columns:1fr; }
+    }
+    .thumb{
+      width:110px;height:78px;border-radius:12px;
+      border:1px solid var(--line);
+      object-fit:cover;background: rgba(0,0,0,.25);
+    }
+    .it-title{font-weight:800;margin:0 0 4px}
+    .it-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+    .tag{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.18)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    .actions button{padding:8px 10px;border-radius:10px}
+    .actions .secondary{color:#fff}
+    .hint{
+      border-top:1px solid var(--line);
+      padding:12px 14px;
+      background: rgba(0,0,0,.15);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* gallery preview */
+    .previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .pv{
+      width:72px;height:56px;border-radius:12px;border:1px solid var(--line);
+      object-fit:cover;background: rgba(0,0,0,.25);
+    }
+  </style>
 </head>
 <body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="title">
+      <h1>AMEA Admin – Oglasi</h1>
+      <div class="sub">Objavi / uređuj oglase + upload slika (R2)</div>
+    </div>
+    <div class="pill">
+      <span id="keyBadge">🔑 Key: nije unesen</span>
+    </div>
+  </div>
 
-<div class="admin-wrap">
-  <h1>Admin panel – Oglasi</h1>
-
-  <div class="admin-card">
-    <div class="grid">
-      <div class="grid-1">
-
+  <div class="grid">
+    <!-- LEFT: form -->
+    <div class="card">
+      <h2 id="formTitle">Novi oglas</h2>
+      <div class="body">
         <div>
-          <label>ADMIN KEY (samo ti)</label>
-          <input id="key" placeholder="Unesi ADMIN_KEY" />
-          <div class="row" style="justify-content:flex-start;gap:8px;margin-top:8px">
-            <button type="button" onclick="saveKey()">Sačuvaj</button>
-            <button type="button" class="btn-ghost" onclick="clearKey()">Obriši</button>
-            <span id="keyStatus" class="muted"></span>
+          <label>ADMIN KEY</label>
+          <div class="row">
+            <input id="key" placeholder="Unesi ADMIN_KEY (čuva se lokalno)" />
+            <button class="secondary" type="button" id="btnSaveKey">Sačuvaj</button>
+            <button class="secondary" type="button" id="btnClearKey">Obriši</button>
+          </div>
+          <div class="muted" style="margin-top:6px">Key nije u kodu – čuva se u tvom browseru (localStorage).</div>
+        </div>
+
+        <div style="margin-top:12px" class="row">
+          <div>
+            <label>Kategorija</label>
+            <select id="kategorija">
+              <option value="racunari">Računari</option>
+              <option value="laptopi">Laptopi</option>
+              <option value="monitori">Monitori</option>
+              <option value="toneri">Toneri</option>
+            </select>
+          </div>
+          <div>
+            <label>Stanje</label>
+            <select id="stanje">
+              <option value="">(opciono)</option>
+              <option value="Novo">Novo</option>
+              <option value="Polovno">Polovno</option>
+            </select>
           </div>
         </div>
 
-        <div>
-          <label>Kategorija</label>
-          <select id="kategorija">
-            <option value="racunari">Računari</option>
-            <option value="laptopi">Laptopi</option>
-            <option value="monitori">Monitori</option>
-            <option value="toneri">Toneri</option>
-          </select>
-        </div>
-
-        <div>
+        <div style="margin-top:12px">
           <label>Naziv</label>
-          <input id="naziv" placeholder="npr. Gaming PC Ryzen 5..." />
+          <input id="naziv" placeholder="npr. Gaming PC Ryzen 5 / 16GB / RTX 3060">
         </div>
 
-        <div>
-          <label>Cijena</label>
-          <input id="cijena" placeholder="npr. 1499 KM" />
+        <div style="margin-top:12px" class="row">
+          <div>
+            <label>Cijena</label>
+            <input id="cijena" placeholder="npr. 1499 KM">
+          </div>
+          <div>
+            <label>Telefon</label>
+            <input id="telefon" placeholder="+387...">
+          </div>
         </div>
 
-        <div>
+        <div style="margin-top:12px">
+          <label>Email</label>
+          <input id="email" placeholder="info@...">
+        </div>
+
+        <div style="margin-top:12px">
           <label>Opis</label>
           <textarea id="opis" placeholder="Kratak opis..."></textarea>
         </div>
 
-        <div>
+        <div style="margin-top:12px">
           <label>Specifikacije (svaka u novi red)</label>
           <textarea id="spec" placeholder="Ryzen 5 5600&#10;16GB RAM&#10;1TB SSD"></textarea>
         </div>
 
-        <div>
-          <label>Telefon</label>
-          <input id="telefon" placeholder="+387..." />
+        <div style="margin-top:12px">
+          <label>Slike (može više)</label>
+          <input id="slike" type="file" accept="image/*" multiple>
+          <div class="previews" id="previews"></div>
         </div>
 
-        <div>
-          <label>Email</label>
-          <input id="email" placeholder="info@..." />
+        <div class="btnrow">
+          <button id="btnCreate" type="button">Objavi oglas</button>
+          <button id="btnUpdate" class="warn" type="button" style="display:none">Sačuvaj izmjene</button>
+          <button id="btnCancelEdit" class="secondary" type="button" style="display:none">Otkaži edit</button>
+          <button id="btnReload" class="secondary" type="button">Osvježi listu</button>
         </div>
 
-        <div class="row">
-          <button type="button" onclick="create()">Objavi oglas</button>
-          <button type="button" class="btn-ghost" onclick="load()">Osvježi</button>
-          <span id="status" class="muted"></span>
-        </div>
-
+        <div class="status" id="status"></div>
       </div>
 
-      <div>
-        <h3>Postojeći oglasi</h3>
-        <div id="list"></div>
+      <div class="hint">
+        <b>Edit:</b> klikni “Edit” na oglasu → forma se popuni → “Sačuvaj izmjene”.
       </div>
+    </div>
+
+    <!-- RIGHT: list -->
+    <div class="card">
+      <h2>Postojeći oglasi</h2>
+
+      <div class="body">
+        <div class="toolbar">
+          <input id="search" class="search" placeholder="Pretraga po nazivu / kategoriji..." />
+          <button id="btnRefresh" class="secondary" type="button">Refresh</button>
+        </div>
+        <div class="muted" id="count"></div>
+      </div>
+
+      <div class="list" id="list"></div>
     </div>
   </div>
 </div>
 
 <script>
-const API_BASE = "https://amea-oglasi-api.belmins1617.workers.dev";
-const KEY_STORAGE = "amea_admin_key";
+  const API_BASE = "https://amea-oglasi-api.belmins1617.workers.dev";
+  const KEY_STORAGE = "amea_admin_key_v2";
 
-const $ = id => document.getElementById(id);
-
-function getKey(){
-  return localStorage.getItem(KEY_STORAGE) || "";
-}
-
-function setKeyStatus(){
-  const k = getKey();
-  $("key").value = k;
-  $("keyStatus").textContent = k ? "✅ Sačuvan" : "⚠️ Nije unesen";
-}
-
-function saveKey(){
-  const k = $("key").value.trim();
-  if(!k) { alert("Unesi ADMIN_KEY"); return; }
-  localStorage.setItem(KEY_STORAGE, k);
-  setKeyStatus();
-}
-
-function clearKey(){
-  localStorage.removeItem(KEY_STORAGE);
-  setKeyStatus();
-}
-
-async function load(){
-  $("status").textContent = "Učitavam...";
-  const res = await fetch(API_BASE + "/api/oglasi", { cache:"no-store" });
-  const data = await res.json();
-  const items = data.items || [];
-
-  if(!items.length){
-    $("list").innerHTML = `<div class="muted">Nema oglasa.</div>`;
-    $("status").textContent = "";
-    return;
-  }
-
-  $("list").innerHTML = items.map(o => `
-    <div class="item">
-      <div>
-        <div><b>${o.naziv || ""}</b> <span class="muted">(${o.kategorija || ""})</span></div>
-        <div class="muted">${o.cijena || ""}</div>
-        <div class="muted" style="font-size:12px">id: ${o.id}</div>
-      </div>
-      <button class="btn-danger" onclick="del('${o.id}')">Obriši</button>
-    </div>
-  `).join("");
-
-  $("status").textContent = "";
-}
-
-async function create(){
-  const key = getKey();
-  if(!key){ alert("Prvo sačuvaj ADMIN_KEY."); return; }
-
-  const payload = {
-    kategorija: $("kategorija").value,
-    naziv: $("naziv").value.trim(),
-    cijena: $("cijena").value.trim(),
-    opis: $("opis").value.trim(),
-    spec: $("spec").value.split("\n").map(s=>s.trim()).filter(Boolean),
-    kontakt: {
-      telefon: $("telefon").value.trim(),
-      email: $("email").value.trim()
-    },
-    slike: []
+  const $ = (id) => document.getElementById(id);
+  const state = {
+    items: [],
+    editingId: null,
+    editingOriginal: null
   };
 
-  if(!payload.naziv){ $("status").textContent = "Naziv je obavezan."; return; }
+  function setStatus(msg){ $("status").textContent = msg || ""; }
+  function getKey(){ return (localStorage.getItem(KEY_STORAGE) || "").trim(); }
 
-  $("status").textContent = "Objavljujem...";
-  const res = await fetch(API_BASE + "/api/oglasi", {
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "X-Admin-Key": key
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if(!res.ok){
-    const t = await res.text();
-    $("status").textContent = "Greška: " + t;
-    return;
+  function updateKeyBadge(){
+    const k = getKey();
+    $("keyBadge").textContent = k ? `🔑 Key: sačuvan (${k.length} znakova)` : "🔑 Key: nije unesen";
+    $("key").value = k;
   }
 
-  $("naziv").value = "";
-  $("cijena").value = "";
-  $("opis").value = "";
-  $("spec").value = "";
-  $("status").textContent = "Objavljeno ✅";
-  await load();
-}
-
-async function del(id){
-  const key = getKey();
-  if(!key){ alert("Nema ADMIN_KEY."); return; }
-
-  $("status").textContent = "Brišem...";
-  const res = await fetch(API_BASE + "/api/oglasi?id=" + encodeURIComponent(id), {
-    method:"DELETE",
-    headers:{ "X-Admin-Key": key }
-  });
-
-  if(!res.ok){
-    const t = await res.text();
-    $("status").textContent = "Greška: " + t;
-    return;
+  function saveKey(){
+    const k = $("key").value.trim();
+    if(!k) return alert("Unesi ADMIN_KEY");
+    localStorage.setItem(KEY_STORAGE, k);
+    updateKeyBadge();
   }
 
-  $("status").textContent = "Obrisano ✅";
-  await load();
-}
+  function clearKey(){
+    localStorage.removeItem(KEY_STORAGE);
+    updateKeyBadge();
+  }
 
-setKeyStatus();
-load();
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+  // === upload jedna slika na Worker (/api/upload)
+  async function uploadOne(file){
+    const key = getKey();
+    if(!key) throw new Error("Nema ADMIN_KEY");
+
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await fetch(API_BASE + "/api/upload", {
+      method: "POST",
+      headers: { "X-Admin-Key": key },
+      body: form
+    });
+
+    if(!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    return data.url;
+  }
+
+  function readSpec(){
+    return $("spec").value.split("\n").map(s => s.trim()).filter(Boolean);
+  }
+
+  function formToPayload(extraSlike){
+    const payload = {
+      kategorija: $("kategorija").value,
+      stanje: $("stanje").value,
+      naziv: $("naziv").value.trim(),
+      cijena: $("cijena").value.trim(),
+      opis: $("opis").value.trim(),
+      spec: readSpec(),
+      kontakt: {
+        telefon: $("telefon").value.trim(),
+        email: $("email").value.trim()
+      },
+      slike: Array.isArray(extraSlike) ? extraSlike : []
+    };
+    return payload;
+  }
+
+  function clearForm(){
+    $("kategorija").value = "racunari";
+    $("stanje").value = "";
+    $("naziv").value = "";
+    $("cijena").value = "";
+    $("opis").value = "";
+    $("spec").value = "";
+    $("telefon").value = "";
+    $("email").value = "";
+    $("slike").value = "";
+    $("previews").innerHTML = "";
+  }
+
+  function setEditMode(on, id=null){
+    state.editingId = on ? id : null;
+
+    $("btnCreate").style.display = on ? "none" : "";
+    $("btnUpdate").style.display = on ? "" : "none";
+    $("btnCancelEdit").style.display = on ? "" : "none";
+    $("formTitle").textContent = on ? `Uredi oglas (${id})` : "Novi oglas";
+  }
+
+  async function load(){
+    setStatus("Učitavam...");
+    const res = await fetch(API_BASE + "/api/oglasi", { cache:"no-store" });
+    const data = await res.json();
+    state.items = data.items || [];
+    setStatus("");
+    render();
+  }
+
+  function render(){
+    const q = ($("search").value || "").trim().toLowerCase();
+    const items = q
+      ? state.items.filter(o =>
+          (o.naziv||"").toLowerCase().includes(q) ||
+          (o.kategorija||"").toLowerCase().includes(q)
+        )
+      : state.items;
+
+    $("count").textContent = `Ukupno: ${state.items.length} | Prikazano: ${items.length}`;
+
+    const list = $("list");
+    if(!items.length){
+      list.innerHTML = `<div class="muted">Nema oglasa.</div>`;
+      return;
+    }
+
+    list.innerHTML = items.map(o => {
+      const thumb = (Array.isArray(o.slike) && o.slike.length) ? o.slike[0] : "";
+      return `
+        <div class="item">
+          ${thumb ? `<img class="thumb" src="${esc(thumb)}" alt="">` : `<div class="thumb" style="display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">nema slike</div>`}
+          <div>
+            <div class="it-title">${esc(o.naziv||"")}</div>
+            <div class="it-meta">
+              <span class="tag">${esc(o.kategorija||"")}</span>
+              ${o.stanje ? `<span class="tag">${esc(o.stanje)}</span>` : ""}
+              ${o.cijena ? `<span class="tag">${esc(o.cijena)}</span>` : ""}
+            </div>
+            <div class="muted" style="margin-top:6px;font-size:12px">id: ${esc(o.id)}</div>
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button" onclick="startEdit('${esc(o.id)}')">Edit</button>
+            <button class="danger" type="button" onclick="delOglas('${esc(o.id)}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  // preview local images
+  $("slike").addEventListener("change", () => {
+    const files = Array.from($("slike").files || []);
+    $("previews").innerHTML = files.map(f => {
+      const url = URL.createObjectURL(f);
+      return `<img class="pv" src="${url}" alt="">`;
+    }).join("");
+  });
+
+  async function create(){
+    const key = getKey();
+    if(!key) return alert("Prvo sačuvaj ADMIN_KEY.");
+
+    // upload slike
+    const files = Array.from($("slike").files || []);
+    let uploaded = [];
+
+    try{
+      if(files.length){
+        setStatus("Upload slika...");
+        for(const f of files){
+          const u = await uploadOne(f);
+          uploaded.push(u);
+        }
+      }
+
+      const payload = formToPayload(uploaded);
+      if(!payload.naziv) return setStatus("Naziv je obavezan.");
+
+      setStatus("Objavljujem...");
+      const res = await fetch(API_BASE + "/api/oglasi", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json", "X-Admin-Key": key },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok) return setStatus("Greška: " + await res.text());
+
+      setStatus("Objavljeno ✅");
+      clearForm();
+      await load();
+    }catch(e){
+      setStatus("Greška: " + e.message);
+    }
+  }
+
+  // === EDIT
+  window.startEdit = (id) => {
+    const o = state.items.find(x => x.id === id);
+    if(!o) return;
+
+    state.editingOriginal = JSON.parse(JSON.stringify(o));
+    setEditMode(true, id);
+
+    $("kategorija").value = o.kategorija || "racunari";
+    $("stanje").value = o.stanje || "";
+    $("naziv").value = o.naziv || "";
+    $("cijena").value = o.cijena || "";
+    $("opis").value = o.opis || "";
+    $("spec").value = Array.isArray(o.spec) ? o.spec.join("\n") : "";
+    $("telefon").value = o.kontakt?.telefon || "";
+    $("email").value = o.kontakt?.email || "";
+
+    $("slike").value = "";
+    const imgs = Array.isArray(o.slike) ? o.slike : [];
+    $("previews").innerHTML = imgs.map(u => `<img class="pv" src="${esc(u)}" alt="">`).join("");
+    setStatus("Edit mode ✅ (možeš dodati nove slike, stare ostaju)");
+  };
+
+  async function update(){
+    const key = getKey();
+    if(!key) return alert("Nema ADMIN_KEY.");
+    if(!state.editingId) return;
+
+    const id = state.editingId;
+
+    // postojeće slike ostaju + dodaj nove upload
+    const old = state.items.find(x => x.id === id);
+    const oldImgs = Array.isArray(old?.slike) ? old.slike : [];
+
+    const files = Array.from($("slike").files || []);
+    let newImgs = [];
+
+    try{
+      if(files.length){
+        setStatus("Upload novih slika...");
+        for(const f of files){
+          const u = await uploadOne(f);
+          newImgs.push(u);
+        }
+      }
+
+      const payload = formToPayload([...oldImgs, ...newImgs]);
+      if(!payload.naziv) return setStatus("Naziv je obavezan.");
+
+      setStatus("Spremam izmjene...");
+      const res = await fetch(API_BASE + "/api/oglasi?id=" + encodeURIComponent(id), {
+        method:"PUT",
+        headers:{ "Content-Type":"application/json", "X-Admin-Key": key },
+        body: JSON.stringify(payload)
+      });
+
+      if(!res.ok) return setStatus("Greška: " + await res.text());
+
+      setStatus("Sačuvano ✅");
+      setEditMode(false);
+      clearForm();
+      await load();
+    }catch(e){
+      setStatus("Greška: " + e.message);
+    }
+  }
+
+  window.delOglas = async (id) => {
+    const key = getKey();
+    if(!key) return alert("Nema ADMIN_KEY.");
+
+    if(!confirm("Obrisati oglas?")) return;
+
+    setStatus("Brišem...");
+    const res = await fetch(API_BASE + "/api/oglasi?id=" + encodeURIComponent(id), {
+      method:"DELETE",
+      headers:{ "X-Admin-Key": key }
+    });
+
+    if(!res.ok) return setStatus("Greška: " + await res.text());
+
+    setStatus("Obrisano ✅");
+    await load();
+  };
+
+  function cancelEdit(){
+    setEditMode(false);
+    clearForm();
+    setStatus("");
+  }
+
+  // events
+  $("btnSaveKey").addEventListener("click", saveKey);
+  $("btnClearKey").addEventListener("click", clearKey);
+  $("btnCreate").addEventListener("click", create);
+  $("btnUpdate").addEventListener("click", update);
+  $("btnCancelEdit").addEventListener("click", cancelEdit);
+  $("btnReload").addEventListener("click", load);
+  $("btnRefresh").addEventListener("click", load);
+  $("search").addEventListener("input", render);
+
+  updateKeyBadge();
+  load();
 </script>
-
 </body>
 </html>
