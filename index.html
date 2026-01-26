@@ -6,132 +6,78 @@
   <title>AMEA Admin – Oglasi</title>
   <style>
     :root{
-      --bg:#0b0f1a;
-      --card:#0f1628;
-      --card2:#111c33;
-      --txt:#eaeaea;
-      --muted:#a8b3cf;
-      --line:rgba(255,255,255,.10);
-      --brand:#1e90ff;
-      --warn:#ffb347;
-      --danger:#ff4d4d;
-      --ok:#38d39f;
-      --shadow: 0 18px 55px rgba(0,0,0,.35);
-      --radius:16px;
+      --bg:#0b0f1a; --txt:#eaeaea; --muted:#a8b3cf; --line:rgba(255,255,255,.10);
+      --brand:#1e90ff; --warn:#ffb347; --danger:#ff4d4d;
+      --shadow: 0 18px 55px rgba(0,0,0,.35); --radius:16px;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at 20% -10%, rgba(30,144,255,.20), transparent 55%),
-                  radial-gradient(circle at 85% 0%, rgba(255,179,71,.18), transparent 45%),
-                  var(--bg);
-      color:var(--txt);
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--txt);
+      background:
+        radial-gradient(circle at 20% -10%, rgba(30,144,255,.20), transparent 55%),
+        radial-gradient(circle at 85% 0%, rgba(255,179,71,.18), transparent 45%),
+        var(--bg);
     }
     .wrap{max-width:1200px;margin:28px auto;padding:0 16px}
-    .topbar{
-      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
-      margin-bottom:14px
-    }
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
     .title{display:flex;flex-direction:column;gap:4px}
     h1{margin:0;font-size:22px}
     .sub{color:var(--muted);font-size:13px}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid var(--line);background:rgba(255,255,255,.04);
-      padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 420px 1fr;
-      gap:14px;
-    }
-    @media(max-width:980px){ .grid{grid-template-columns:1fr} }
+    .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:420px 1fr;gap:14px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}}
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-      border:1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
+      border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;
     }
-    .card h2{
-      margin:0;
-      font-size:15px;
-      padding:14px 14px;
-      border-bottom:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color:#dbe3ff;
-    }
+    .card h2{margin:0;font-size:15px;padding:14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03);color:#dbe3ff}
     .card .body{padding:14px}
     label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
     input,select,textarea{
-      width:100%;
-      padding:11px 12px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      color:var(--txt);
-      outline:none;
+      width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(0,0,0,.25);color:var(--txt);outline:none;
     }
     textarea{min-height:90px;resize:vertical}
-    input:focus,select:focus,textarea:focus{border-color: rgba(30,144,255,.6)}
+    input:focus,select:focus,textarea:focus{border-color:rgba(30,144,255,.6)}
     .row{display:flex;gap:10px;align-items:center}
     .row > *{flex:1}
     .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     button{
-      border:0;
-      border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:700;
-      color:#0b0f1a;
-      background: var(--brand);
+      border:0;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:800;
+      color:#0b0f1a;background:var(--brand);
     }
-    button.secondary{
-      background: rgba(255,255,255,.08);
-      color:var(--txt);
-      border:1px solid var(--line);
-    }
-    button.danger{
-      background: var(--danger);
-      color:#fff;
-    }
-    button.warn{
-      background: var(--warn);
-      color:#111;
-    }
+    button.secondary{background:rgba(255,255,255,.08);color:var(--txt);border:1px solid var(--line)}
+    button.danger{background:var(--danger);color:#fff}
+    button.warn{background:var(--warn);color:#111}
     button:disabled{opacity:.55;cursor:not-allowed}
     .muted{color:var(--muted);font-size:12px}
     .status{margin-top:10px;font-size:12px;color:var(--muted);min-height:16px}
 
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
     .search{flex:1;min-width:220px}
-    .list{display:grid;gap:10px;padding:14px;}
+    .list{display:grid;gap:10px;padding:14px}
     .item{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      border-radius:14px;
-      padding:12px;
-      display:grid;
-      grid-template-columns: 110px 1fr auto;
-      gap:12px;
-      align-items:center;
+      border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:14px;padding:12px;
+      display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;
     }
-    @media(max-width:720px){ .item{grid-template-columns:1fr;} }
-    .thumb{
-      width:110px;height:78px;border-radius:12px;
-      border:1px solid var(--line);
-      object-fit:cover;background: rgba(0,0,0,.25);
-    }
-    .it-title{font-weight:800;margin:0 0 4px}
+    @media(max-width:720px){.item{grid-template-columns:1fr}}
+    .thumb{width:110px;height:78px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:rgba(0,0,0,.25)}
+    .it-title{font-weight:900;margin:0 0 4px}
     .it-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
     .tag{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;background:rgba(0,0,0,.18)}
     .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
     .actions button{padding:8px 10px;border-radius:10px}
     .actions .secondary{color:#fff}
-    .hint{border-top:1px solid var(--line);padding:12px 14px;background: rgba(0,0,0,.15);color:var(--muted);font-size:12px}
+    .hint{border-top:1px solid var(--line);padding:12px 14px;background:rgba(0,0,0,.15);color:var(--muted);font-size:12px}
+
     .previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .pv{width:72px;height:56px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background: rgba(0,0,0,.25);}
+    .pvWrap{position:relative;display:inline-block}
+    .pv{width:72px;height:56px;border-radius:12px;border:1px solid var(--line);object-fit:cover;background:rgba(0,0,0,.25)}
+    .pvX{
+      position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.65);color:#fff;
+      cursor:pointer;font-weight:900;line-height:20px;
+    }
   </style>
 </head>
 <body>
@@ -141,16 +87,13 @@
       <h1>AMEA Admin – Oglasi</h1>
       <div class="sub">Objavi / uređuj oglase + upload slika (R2)</div>
     </div>
-    <div class="pill">
-      <span id="keyBadge">🔑 Key: nije unesen</span>
-    </div>
+    <div class="pill"><span id="keyBadge">🔑 Key: nije unesen</span></div>
   </div>
 
   <div class="grid">
     <div class="card">
       <h2 id="formTitle">Novi oglas</h2>
       <div class="body">
-
         <div>
           <label>ADMIN KEY</label>
           <div class="row">
@@ -221,6 +164,7 @@
           <label>Slike (može više)</label>
           <input id="slike" type="file" accept="image/*" multiple>
           <div class="previews" id="previews"></div>
+          <div class="muted" style="margin-top:6px">U edit modu: klikni ✕ na slici da je izbrišeš iz oglasa.</div>
         </div>
 
         <div class="btnrow">
@@ -233,14 +177,11 @@
         <div class="status" id="status"></div>
       </div>
 
-      <div class="hint">
-        <b>Edit:</b> klikni “Edit” na oglasu → forma se popuni → “Sačuvaj izmjene”.
-      </div>
+      <div class="hint"><b>Edit:</b> klikni “Edit” → promijeni → “Sačuvaj izmjene”.</div>
     </div>
 
     <div class="card">
       <h2>Postojeći oglasi</h2>
-
       <div class="body">
         <div class="toolbar">
           <input id="search" class="search" placeholder="Pretraga po nazivu / kategoriji..." />
@@ -248,7 +189,6 @@
         </div>
         <div class="muted" id="count"></div>
       </div>
-
       <div class="list" id="list"></div>
     </div>
   </div>
@@ -259,7 +199,7 @@
   const KEY_STORAGE = "amea_admin_key_v2";
 
   const $ = (id) => document.getElementById(id);
-  const state = { items: [], editingId: null, editingOriginal: null };
+  const state = { items: [], editingId: null, editingOriginal: null, editingImages: [] };
 
   function setStatus(msg){ $("status").textContent = msg || ""; }
   function getKey(){ return (localStorage.getItem(KEY_STORAGE) || "").trim(); }
@@ -337,6 +277,7 @@
     $("email").value = "";
     $("slike").value = "";
     $("previews").innerHTML = "";
+    state.editingImages = [];
   }
 
   function setEditMode(on, id=null){
@@ -346,6 +287,35 @@
     $("btnCancelEdit").style.display = on ? "" : "none";
     $("formTitle").textContent = on ? `Uredi oglas (${id})` : "Novi oglas";
   }
+
+  function renderPreviews(){
+    const wrap = $("previews");
+
+    // u edit modu: prikazujemo postojeće slike + X za brisanje
+    if(state.editingId){
+      const imgs = state.editingImages || [];
+      wrap.innerHTML = imgs.map((u, idx) => `
+        <div class="pvWrap">
+          <img class="pv" src="${esc(u)}" alt="">
+          <button class="pvX" type="button" onclick="removeImg(${idx})">×</button>
+        </div>
+      `).join("");
+      return;
+    }
+
+    // u create modu: prikaz local preview fajlova
+    const files = Array.from($("slike").files || []);
+    wrap.innerHTML = files.map(f => {
+      const url = URL.createObjectURL(f);
+      return `<img class="pv" src="${url}" alt="">`;
+    }).join("");
+  }
+
+  window.removeImg = (idx) => {
+    if(!state.editingId) return;
+    state.editingImages.splice(idx, 1);
+    renderPreviews();
+  };
 
   async function load(){
     setStatus("Učitavam...");
@@ -402,13 +372,7 @@
     }).join("");
   }
 
-  $("slike").addEventListener("change", () => {
-    const files = Array.from($("slike").files || []);
-    $("previews").innerHTML = files.map(f => {
-      const url = URL.createObjectURL(f);
-      return `<img class="pv" src="${url}" alt="">`;
-    }).join("");
-  });
+  $("slike").addEventListener("change", renderPreviews);
 
   async function create(){
     const key = getKey();
@@ -440,7 +404,7 @@
 
       setStatus("Objavljeno ✅");
       clearForm();
-      await load();
+      await load(); // odmah osvježi listu
     }catch(e){
       setStatus("Greška: " + e.message);
     }
@@ -457,16 +421,17 @@
     $("stanje").value = o.stanje || "";
     $("naziv").value = o.naziv || "";
     $("cijena").value = o.cijena || "";
-    $("kolicina").value = (o.kolicina ?? 0);
+    $("kolicina").value = (o.kolicina === 0 || o.kolicina) ? Number(o.kolicina) : 0;
     $("opis").value = o.opis || "";
     $("spec").value = Array.isArray(o.spec) ? o.spec.join("\n") : "";
     $("telefon").value = o.kontakt?.telefon || "";
     $("email").value = o.kontakt?.email || "";
 
     $("slike").value = "";
-    const imgs = Array.isArray(o.slike) ? o.slike : [];
-    $("previews").innerHTML = imgs.map(u => `<img class="pv" src="${esc(u)}" alt="">`).join("");
-    setStatus("Edit mode ✅ (možeš dodati nove slike, stare ostaju)");
+    state.editingImages = Array.isArray(o.slike) ? o.slike.slice() : [];
+    renderPreviews();
+
+    setStatus("Edit mode ✅ (✕ na slici briše tu sliku iz oglasa, nove slike dodaj file uploadom)");
   };
 
   async function update(){
@@ -475,9 +440,6 @@
     if(!state.editingId) return;
 
     const id = state.editingId;
-
-    const old = state.items.find(x => x.id === id);
-    const oldImgs = Array.isArray(old?.slike) ? old.slike : [];
 
     const files = Array.from($("slike").files || []);
     let newImgs = [];
@@ -491,7 +453,8 @@
         }
       }
 
-      const payload = formToPayload([...oldImgs, ...newImgs]);
+      // postojeće = state.editingImages (poslije brisanja) + nove uploadovane
+      const payload = formToPayload([...(state.editingImages || []), ...newImgs]);
       if(!payload.naziv) return setStatus("Naziv je obavezan.");
 
       setStatus("Spremam izmjene...");
@@ -506,7 +469,7 @@
       setStatus("Sačuvano ✅");
       setEditMode(false);
       clearForm();
-      await load();
+      await load(); // odmah osvježi listu
     }catch(e){
       setStatus("Greška: " + e.message);
     }
